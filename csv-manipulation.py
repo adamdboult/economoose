@@ -65,7 +65,7 @@ def _decode_dict(input_dict):
 ######################
 # Load config object #
 ######################
-configPath = os.path.join(dir, "private/config.json")
+configPath = os.path.join(dir, "config.json")
 
 with open(configPath) as data_file:
     configObj = json.load(data_file)

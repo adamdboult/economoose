@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=ubuntu
+User=adam
 ExecStart=/usr/bin/node /home/adam/Projects/economoose/server.js
 Restart=always
 WatchogSec=604800

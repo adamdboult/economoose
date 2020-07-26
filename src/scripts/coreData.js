@@ -38,8 +38,11 @@ myApp.directive("mathjaxBind", function() {
 */
 
 myApp.directive('mathJaxBind', function() {
+  console.log("hi");
   var refresh = function(element) {
-      MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
+      //MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
+      MathJax.typeset();
+      console.log("big 2");
   };
   return {
     link: function(scope, element, attrs) {
@@ -948,14 +951,14 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 		.attr("dy", ".35em")
 		.style(legendStyle);
 
-	    svg.append("svg:text")
+	    /*svg.append("svg:text")
 		.attr("class", "watermark")
 		.attr("x", paddingmarginxleft)
 		.attr("y", paddingmarginytop)
 		.text("www.yetipredict.com")
 		.attr("text-anchor", "start")
 		.attr("dy", ".71em")
-		.style(legendStyle);
+		.style(legendStyle);*/
 
 	    svg.append("path")
 		.datum($scope.lineData[i][$scope.lineMatch])
@@ -1185,7 +1188,7 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	}
 	console.log("big old csv: "+JSON.stringify(CSV));
 	var fileName = "";
-	var ReportTitle="YetiPredict data";
+	var ReportTitle="EconoMoose data";
 	fileName += ReportTitle.replace(/ /g,"_");   
 	console.log("file name: "+fileName);
 	var uri = 'data:text/csv;charset=utf-8,' + encodeURI(CSV);

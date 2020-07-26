@@ -27,15 +27,14 @@ html(lang="en")
 		//script#MathJax-script(async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
 		//script(type="text/javascript", src="/js/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML")
 
-		script(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js")
-		script(scr="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/config/TeX-MML-AM_CHTML.js")
+		//script(src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js")
+		//script(scr="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/config/TeX-MML-AM_CHTML.js")
 		//script(src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML")
-
+		script#MathJax-script(async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js")
 
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js")
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.js")
-
-
+		
 		link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css", rel="stylesheet")
 
 
@@ -48,13 +47,21 @@ html(lang="en")
 			div.collapse.navbar-collapse#navbarNavAltMarkup
 				ul.navbar-nav
 					li.nav-item
+						a.nav-link(href="/examples") Examples
+					li.nav-item
 						a.nav-link(href="/about") About
+					li.nav-item.dropdown
+						a.nav-link.dropdown-toggle(href="#", id=navbarOther, role="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false") Other projects
+						div.dropdown-menu(aria-labelledby="navbarOther")
+							a.dropdown-item(href="https://www.artificialeconomist.com") ArtificialEconomist.com
+							//a.dropdown-item(href="https://www.economoose.com") Economoose.com
+							a.dropdown-item(href="https://www.yetipredict.com") YetiPredict.com
 				ul.navbar-nav.ml-auto
 					li.nav-item
 						a.nav-link(href="https://www.bou.lt") Bou.lt
 					li.nav-item
-						a.nav-link(href="https://www.yetipredict.com") YetiPredict.com
+						a.nav-link(href="https://github.com/adamdboult/") GitHub
 					li.nav-item
-						a.nav-link(href="https://www.artificialeconomist.com") Artificial Economist
+						a.nav-link(href="https://www.linkedin.com/in/adamdboult") LinkedIn
 		block content
 

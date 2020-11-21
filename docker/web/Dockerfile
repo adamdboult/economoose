@@ -20,7 +20,7 @@ RUN apt-get -y install python3
 # Install node
 #RUN apt-get -y install nodejs npm
 #RUN npm -g install npx
-RUN apt-get -y install mongodb
+#RUN apt-get -y install mongodb
 
 # Copy the file from your host to your current location.
 #COPY package.json .

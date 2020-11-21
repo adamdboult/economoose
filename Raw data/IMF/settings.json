@@ -1,7 +1,11 @@
 {
+    "__comment1__": "These are to load the file",
+    "name": "WEOApr2020all.xls",
     "encoding": "latin-1",
-    "cutOff": 8317,
     "delimiter": "tab",
+
+    "__comment2__": "This is for the cleaning",
+    "cutOff": 8317,
     "scaleRow": 7,
     "scale": {
 	"Millions": 1000000,
@@ -9,7 +13,8 @@
 	"Units": 1,
 	"": 1
     },
-    "favArray": [314,8003],
+
+    "favArray": [314,200,8003],
     "noteArray": ["ISO","WEO Country Code","Estimates Start After","Country/Series-specific Notes","Subject Notes","Subject Descriptor","WEO Subject Code"],
     "filterArray": ["Units","Country"],
     "subjectArray": [

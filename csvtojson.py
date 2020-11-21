@@ -4,7 +4,7 @@ import os
 import json
 import shutil
 print ('start')
-csvfile=open('data/csv/corrected.csv','r')
+csvfile=open('data/csv/corrected.csv','r', encoding="latin-1")
 filename= 'data/json/0.json'
 dir = os.path.dirname(filename)
 if os.path.exists(dir):

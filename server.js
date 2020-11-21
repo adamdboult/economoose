@@ -1,107 +1,55 @@
 "use strict";
 /*jshint node:true */
 
+//////////////////
+/* Dependencies */
+//////////////////
+
 //WINSTON
 var logger = require(__dirname + '/config/winston');
 
 //DEPENDENCIES, 'jade' not included but referenced later
 var express  = require('express'),
-    //passport = require('passport'),
-    //flash = require('connect-flash'),
-    //morgan = require('morgan'),
-    //cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    //session = require('express-session'),
-    //Q = require('q'),
-    //bcrypt=require('bcrypt-nodejs'),
     mongoose = require('mongoose'),
-    fs=require('fs'),
-    http = require('http'),
-    //cookieSession = require('cookie-session'),
-    //https = require('https'),
-    //forceDomain = require("forcedomain"),
-    favicon = require('serve-favicon'),
-    //sm = require("sitemap"),
-    spawn = require('child_process').spawn;
+    fs       = require('fs'),
+    http     = require('http'),
+    favicon  = require('serve-favicon')
 
-// config
+////////////
+/* config */
+////////////
 var configObj = JSON.parse(fs.readFileSync(__dirname + '/config.json' , 'utf8'));
-	
-
-////Mailgun
-//var api_key = mailgunObj.api_key;
-//var domain = mailgunObj.domain;
-//var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
-//var MailComposer = require('mailcomposer').MailComposer;
 
 
-//CONNECT TO MONGODB
-//mongoose.connect('mongodb://localhost/' + configObj.databaseName, function(err) {
-mongoose.connect('mongodb://127.0.0.1:27017/' + configObj.databaseName, function(err) {
-    if (err) logger.debug("ERR" + err);
-});
-
+/////////////
+/* Express */
+/////////////
 
 //START EXPRESS
 var app = express();
-/*
-app.use(forceDomain({
-    hostname: configObj.siteName,
-    //  port: 443,
-    //protocol: 'http'
-}));
-*/
-/*
-//forward http to https
-function requireHTTPS(req, res, next) {
-    if (!req.secure) {
-        //FYI this should work for local development as well
-        return res.redirect('https://' + req.get('host') + req.url);
-    }
-    next();
-}
 
-app.use(requireHTTPS);
-*/
+//FAVICON
+app.use(favicon(__dirname + configObj.favicon));
 
-//MAIL GUN
-/*
-var data = {
-    from: mailgunObj.fromMail,
-    to: mailgunObj.toMail,
-    subject: 'Hello',
-    text: 'Testing some Mailgun awesomness! Written by Adam.'
-};
-*/
-//mailgun.messages().send(data, function (error, body) {
-//  console.log(body);
-//});
 
-//AUTHENTICATION
-//app.use(cookieParser());
-//app.use(bodyParser());
+///////////
+/* MONGO */
+///////////
+//CONNECT TO MONGODB
+//mongoose.connect('mongodb://localhost/' + configObj.databaseName, function(err) {
 
-//app.set('trust proxy', 1);
+// NB: latter is for docker
+//mongoose.connect('mongodb://127.0.0.1:27017/' + configObj.databaseName, function(err) {
+mongoose.connect('mongodb://mongo:27018/' + configObj.databaseName, function(err) {
+//mongoose.connect('mongodb://economoose_db:12345/' + configObj.databaseName, function(err) {
+    if (err) logger.debug("ERR" + err);
+});
+console.log("here?");
 
-/*
-app.use(cookieSession({
-    name: 'session',
-    keys: ["rdgnhudsrkhauwung5464grtd"]
-}));
-*/
-//app.use(session({secret: "rdgnhudsrkhauwung5464grtd"}));
-//app.use(passport.initialize());
-//app.use(passport.session());
-//app.use(flash());
-
-//require(__dirname + '/config/passport')(passport);
 
 
 //MODELS
 var DataSerie = require(__dirname + '/config/models/data.js');
-//var PredictSerie = require(__dirname + '/config/models/predict.js');
-//var User = require(__dirname + '/config/models/user.js');
-//var Group = require(__dirname + '/config/models/group.js');
 
 //FILTER OBJECT
 var filterArray = {};
@@ -175,99 +123,30 @@ var favInit = function() {
     });
 };
 
-//FAVICON
-app.use(favicon(__dirname + configObj.favicon));
+////////////
+/* ROUTES */
+////////////
+app.use(express.static(__dirname + '/public'));// set the static files location /public/img will be /img for users
 
-// SITE MAP
-//var sitemap;
+app.locals.pretty=true;
+app.set('views',__dirname+'/src/jade/');
+app.set('view engine', 'jade');
+
+require(__dirname+'/config/routes/routes')(app, logger);
+require(__dirname+'/config/routes/data')(app, logger);
+
+// Other?
 /*
-var refreshSitemap = function(){
-    Group.find({"open": true,"lName": {$ne: "personal"}}, "lName open", function(err, idwa){
-	var sitemapGroupArray = [];
-	var siteGroup;
-	var sitePrediction;
-	var sitePredictionObject = {};
-	for (siteGroup in idwa){
-	    sitemapGroupArray.push(idwa[siteGroup].lName);
-	    sitePredictionObject[idwa[siteGroup].lName] = [];
-	}
-	//userFind['local.username']={"$in":affectedUsers};
-	//for (siteGroup in sitemapGroupArray){
-	PredictSerie.find({"group" :{"$in": sitemapGroupArray}}, "ldesc group", function(err2, idwa2){
-	    //PredictSerie.find({"group":sitemapGroupArray[siteGroup]},"ldesc group",function(err2,idwa2){
-	    for (sitePrediction in idwa2){
-		sitePredictionObject[idwa2[sitePrediction].group].push(idwa2[sitePrediction].ldesc);
-	    }
-	    var key;
-	    var predKey;
-	    var siteURLs=[];
-	    for (key in sitePredictionObject){
-		siteURLs.push({
-		    url: '/group/' + key
-		});
-		siteURLs.push({
-		    url: '/groupabout/' + key
-		});
-		for (predKey in sitePredictionObject[key]){
-		    siteURLs.push({
-			url: '/group/' + key + '/' + sitePredictionObject[key][predKey]
-		    });
-		    siteURLs.push({
-			url: '/group/' + key + '/' + sitePredictionObject[key][predKey] + '/about/'
-		    });
-		}
-	    }
-	    var addMapEntry;
-	    var additionalMap=[
-		'/',
-		'/data/',
-		'/signup/',
-		'/login/',
-		'/data/',
-		'/grouplist/',
-		'/news/'
-	    ];
-	    for (addMapEntry in additionalMap){
-		siteURLs.push({
-		    url: additionalMap[addMapEntry]
-		});
-	    }
-	    var files= fs.readdirSync(__dirname + '/src/jade/blog');
-	    files.forEach(function(f){
-		siteURLs.push({
-		    url: "/news/"+f.substring(0, f.length - 5)
-		});
-	    });
-	    sitemap=sm.createSitemap({
-		hostname: "https://"+configObj.siteName,
-		cacheTime: 60000,
-		urls: siteURLs
-	    });
-	    //		setTimeout(refreshSitemap,10*60*1000);
-	});
-	//}
-
+app.get('/sitemap.xml', function(req, res){
+    sitemap.toXML(function(xml){
+	res.header('Content-Type', 'application/xml');
+	res.send(xml);
     });
-};
-refreshSitemap();
+});
 */
-//backup mongo
-/*
-var backupDatabases = function(){
-    var args = [
-	'--db',
-	configObj.databaseName,
-	'--out',
-	'MongoDBDump/' + new Date()
-	//'--collection',
-	//'test'
-    ];
-    var mongodump = spawn('/usr/bin/mongodump', args);
-    //    setTimeout(backupDatabases,24*60*60*1000);
-};
 
-backupDatabases();
-*/
+// Other?
+
 var robotSend = "";
 var robotSendArray = [
     "User-agent: *",
@@ -284,25 +163,7 @@ app.get('/robots.txt', function(req,res){
     res.send(robotSend);
 });
 
-app.get('/sitemap.xml', function(req, res){
-    sitemap.toXML(function(xml){
-	res.header('Content-Type', 'application/xml');
-	res.send(xml);
-    });
-});
-
-//ROUTES
-app.use(express.static(__dirname + '/public'));// set the static files location /public/img will be /img for users
-
-app.locals.pretty=true;
-app.set('views',__dirname+'/src/jade/');
-app.set('view engine', 'jade');
-
-require(__dirname+'/config/routes/routes')(app, logger);
-//require(__dirname+'/private/admin')(app, logger);
-require(__dirname+'/config/routes/data')(app, logger);
-//require(__dirname+'/config/routes/predict')(app, passport, logger);
-//require(__dirname+'/config/routes/user')(app, passport, logger);
+// Other
 
 app.get('/path/:id', function(req, res) {
     res.json(filterArray);
@@ -334,7 +195,9 @@ app.use(function(req, res, next){
     res.type('txt').send('Not found');
 });
 
-//HTTP
+//////////
+/* HTTP */
+//////////
 var HTTPportnum=configObj.ports.http;
 var HTTPport = process.env.PORT || HTTPportnum;
 
@@ -342,25 +205,4 @@ var httpServer=http.createServer(app);
 httpServer.listen(HTTPport);
 
 logger.debug("App listening on port " + HTTPport);
-
-
-//HTTPS setup
-/*
-var HTTPSportnum = configObj.ports.https;
-var privateKey = fs.readFileSync(configObj.keys.privateKey);
-var certificate = fs.readFileSync(configObj.keys.certificate);
-var certAuth = fs.readFileSync(configObj.keys.certAuth);
-var options = {key: privateKey,
-	       cert: certificate,
-	       ca: certAuth
-	      };
-
-var httpsPort = process.env.PORT || HTTPSportnum;
-*/
-// LISTEN
-/*
-var httpsServer=https.createServer(options,app);
-httpsServer.listen(httpsPort);
-logger.debug("HTTPS on port "+httpsPort);
-*/
 

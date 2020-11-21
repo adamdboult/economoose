@@ -16,10 +16,10 @@ var stripDebug = require('gulp-strip-debug');
 var uglify = require('gulp-uglify');
 var autoprefix = require('gulp-autoprefixer');
 //var minifyCSS = require('gulp-minify-css');
-var sass=require('gulp-sass');
+var sass = require('gulp-sass');
 var rmdir = require('rimraf');
-var fs=require('fs');
-var shell=require('gulp-shell');
+var fs = require('fs');
+var shell = require('gulp-shell');
 var Q = require('q');
 
 /////////////////

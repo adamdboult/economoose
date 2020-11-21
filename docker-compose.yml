@@ -1,0 +1,25 @@
+version: "3"
+services:
+  nodejs:
+    build:
+        context: ./
+        dockerfile: ./docker/web/Dockerfile
+    container_name: nodejs
+    restart: unless-stopped
+    ports:
+      - "3123:3123"
+    depends_on:
+      - mongo
+#    links:
+#      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    command: mongod --port 27018
+    restart: unless-stopped
+    volumes:
+      - ./mongo:/data/db
+    ports:
+      - '27018:27018'
+#      - '12345:27017'
+

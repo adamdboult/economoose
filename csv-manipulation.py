@@ -4,6 +4,7 @@
 # Import libraries #
 ####################
 import csv
+#import unicodecsv
 import os
 import codecs
 import shutil
@@ -65,24 +66,26 @@ def _decode_dict(input_dict):
 ######################
 # Load config object #
 ######################
-configPath = os.path.join(dir, "config.json")
+#configPath = os.path.join(dir, "data_config.json")
 
-with open(configPath) as data_file:
-    configObj = json.load(data_file)
+#with open(configPath) as data_file:
+#    configObj = json.load(data_file)
 
-folder = configObj["data"]["folder"]
+#source_directory = configObj["data"]["folder"]
+source_directory = os.path.join(dir, "Raw data/IMF")
 
 ########################
 # Load settings object #
 ########################
-data = open(folder + 'settings.json')
-jsonstring=data.read()
+source_settings = open(os.path.join(source_directory, 'settings.json'))
+jsonstring = source_settings.read()
 
 json_data = json.loads(jsonstring)
 #json_data=json.loads(jsonstring, object_hook=_decode_dict)
 
+csvFileName	= json_data["name"]
 csvdelimiter	= json_data["delimiter"]
-encoding	= json_data["encoding"]
+source_encoding	= json_data["encoding"]
 cutOff		= json_data["cutOff"]
 scaleObject	= json_data["scale"]
 noteArray	= json_data["noteArray"]
@@ -104,24 +107,24 @@ else:
 ######################
 # Set up destination #
 ######################
-filename = 'data/csv/corrected.csv'
-dir = os.path.dirname(filename)
-if os.path.exists(dir):
-	shutil.rmtree(dir)
-os.makedirs(dir)
-b = open(filename, 'w')
-a = csv.writer(b, delimiter = ',')
+destination_path = os.path.join(dir, 'data/csv/corrected.csv')
+destination_dir = os.path.dirname(destination_path)
+if os.path.exists(destination_dir):
+	shutil.rmtree(destination_dir)
+os.makedirs(destination_dir)
+destination_file = open(destination_path, 'w', encoding = source_encoding)
+destination_writer = csv.writer(destination_file, delimiter = ',')
 
 ############
 # Load CSV #
 ############
-csvFileName = configObj["data"]["name"]
+#csvFileName = configObj["data"]["name"]
 
-with open(folder + csvFileName,'r', encoding=encoding) as csvfile:
+#with open(source_directory + csvFileName, 'r', encoding = source_encoding) as csvfile:
+with open(os.path.join(source_directory, csvFileName), 'r', encoding = source_encoding) as csvfile:
 
 	reader = csv.reader(csvfile, delimiter = useDelimiter)
-
-
+	
 	origin = []
 	target = []
 
@@ -130,19 +133,15 @@ with open(folder + csvFileName,'r', encoding=encoding) as csvfile:
 		target.append(entry[1])
 
 	rownum = 0
-	#print (reader)
 	for row in reader:
-		#print (row)
+
 		writeBin = 1
-		cellnum = 0
-		#for cell in row:
-		#	row[cellnum] = cell.encode('utf-8')
-		#	#row[cellnum]=cell.decode(encoding).encode('utf-8')
-		#	cellnum = cellnum + 1
+		####
+		# Do stuff for first row
+		####
 		if rownum == 0:
 			cellnum = 0
 			for cell in row:
-				#print (cell)
 				if cell.isdigit():
 					row[cellnum] = "*json*data." + row[cellnum]
 				if cell in noteArray:
@@ -150,20 +149,38 @@ with open(folder + csvFileName,'r', encoding=encoding) as csvfile:
 				if cell in filterArray:
 					row[cellnum] = "*json*filter." + row[cellnum]
 				cellnum = cellnum + 1
+
+			####
+			# Add manual metadata (eg source, favourite)
+			####
 			for header in headerAppend:
 				row.append(header)
 			headers = row
-		elif rownum < cutOff:
+		####
+		# Do stuff for other rows
+		####
+		#elif rownum < cutOff:
+		elif row[1] != "":
+			####
+			# Add manual metadata (eg source, favourite)
+			####
 			for cell in rowAppend:
-                                val = ""
-                                for part in cell:
-                                        #print type(part)
-                                        if type(part) is str:
-                                                val += part
-                                        else:
-                                                val += row[part]
-                                row.append(val)
+				val = ""
+				for part in cell:
+					#print(type(part))
+					if type(part) is str:
+						val += part
+					else:
+						val += row[part]
+				row.append(val)
+			####
+			# Add the subject type (eg finacne, output)
+			####
 			row.append(target[origin.index(row[4])])
+
+			####
+			# Carry on
+			####
 			for index, cell in enumerate(row):
 				if  headers[index][:jsonStrLen]==jsonStr:
 					subString=headers[index][jsonStrLen:]
@@ -171,19 +188,28 @@ with open(folder + csvFileName,'r', encoding=encoding) as csvfile:
 					key=subString[:dotIndex]
 					if key == "data":
 						rowScale = row[scaleRow]
-						if isFloat(cell.replace(',',''))==1:
-							row[index]=float(cell.replace(',',''))*scaleObject[rowScale]
+						if isFloat(cell.replace(',', '')) == 1:
+							row[index]=float(cell.replace(',', '')) * scaleObject[rowScale]
+
+			####
+			# Add favourite
+			####
 			if rownum in favArray:
 				row.append(1)
-			elif rownum<cutOff:
+			elif rownum < cutOff:
 				row.append(0) 
 		else:
 			writeBin = 0
-		#print (row)
 		if writeBin == 1:
-			a.writerow(row)
-		rownum = rownum+1
-	b.close()
+			destination_writer.writerow(row)
+		rownum = rownum + 1
+		print(rownum)
+	destination_file.close()
 
+
+
+print("Done?")
 exec(open('csvtojson.py').read())
+
+
 

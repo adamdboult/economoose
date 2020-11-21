@@ -6,4 +6,5 @@ public/
 *~
 *.pyc
 *__pycache__/
-mongo/
+.git/
+

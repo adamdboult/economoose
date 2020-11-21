@@ -1,8 +1,4 @@
 {
-    "data":{
-	"folder": "Raw data/IMF/",
-	"name": "WEOApr2019all.xls"
-    },
     "ports":{
 	"http": 3123,
 	"https": 8000

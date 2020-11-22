@@ -13,7 +13,7 @@ services:
   mongo:
     container_name: mongo
     image: webhippie/mongodb
-    command: mongod --port 27018 --bind_ip_all
+    command: mongod --port 27018 --bind_ip 0.0.0.0
     restart: unless-stopped
     volumes:
       - ./mongo3:/data/db

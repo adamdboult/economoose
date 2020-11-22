@@ -7,3 +7,6 @@ public/
 *.pyc
 *__pycache__/
 mongo/
+mongo2/
+mongo3/
+

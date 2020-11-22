@@ -10,6 +10,15 @@ services:
       - "3123:3123"
     depends_on:
       - mongo
+  mongo:
+    container_name: mongo
+    image: webhippie/mongodb
+    command: mongod --port 27018 --bind_ip_all
+    restart: unless-stopped
+    volumes:
+      - ./mongo3:/data/db
+    ports:
+      - '27018:27018'
 #  mongo:
 #    container_name: mongo
 #    image: mongo
@@ -19,15 +28,15 @@ services:
 #      - ./mongo:/data/db
 #    ports:
 #      - '27018:27018'
-  mongo:
-    container_name: mongo
-    build:
-        context: ./
-        dockerfile: ./docker/db/Dockerfile
-    command: mongod --port 27018 --bind_ip_all
-    restart: unless-stopped
-    volumes:
-      - ./mongo2:/data/db
-    ports:
-      - '27018:27018'
+#  mongo:
+#    container_name: mongo
+#    build:
+#        context: ./
+#        dockerfile: ./docker/db/Dockerfile
+#    command: mongod --port 27018 --bind_ip_all
+#    restart: unless-stopped
+#    volumes:
+#      - ./mongo2:/data/db
+#    ports:
+#      - '27018:27018'
 

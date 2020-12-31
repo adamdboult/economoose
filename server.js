@@ -40,7 +40,7 @@ app.use(favicon(__dirname + configObj.favicon));
 
 // NB: latter is for docker
 //mongoose.connect('mongodb://127.0.0.1:27017/' + configObj.databaseName, function(err) {
-mongoose.connect('mongodb://mongo:27018/' + configObj.databaseName, function(err) {
+mongoose.connect('mongodb://economoose_mongo:27018/' + configObj.databaseName, function(err) {
     if (err) logger.debug("ERR" + err);
 });
 console.log("here?");

@@ -1,39 +1,30 @@
 {
-    "dependencies": {
-	"winston": "~2.2.0",
-	"mongoose": "~5.7.7",
-
-	"jshint": "~2.9.0",
-
-	"rimraf": "^2.6.3",
-	"q": "^2.0.3",
-	"gulp": "~3.9.1",
-	"gulp-jshint": "~2.0.1",
-	"gulp-concat": "~2.6.0",
-	"gulp-clean": "*",
-	"gulp-strip-debug": "~1.1.0",
-	"gulp-uglify": "~1.5.3",
-	"gulp-autoprefixer": "~3.1.0",
-	"gulp-jade": "~1.1.0",
-	"gulp-sass": "^4.0.2",
-	"gulp-shell": "~0.5.1",
-
-	"express": "~4.13.4",
-	"serve-favicon": "~2.3.0",
-	"jade":"~1.11.0"
-    },
-    "repository": {
-	"type": "git",
-	"url": "git://git@bitbucket.org/adamdboult/econyeti.git"
-    },
-    "description": "Economoose explores public data",
-    "scripts": {
-	"gulp_debug": "gulp debug",
-	"bower_install": "bower install",
-	"bower_update": "bower update",
-	"metalsmith": "metalsmith",
-	"dataCombiner": "dataCombiner"
-    },
-    "license": "SEE LICENSE IN LICENSE.md"
+  "dependencies": {
+    "angular": "~1.4.14",
+    "angular-route": "~1.2.32",
+    "bootstrap": "^4.5.3",
+    "child_process": "^1.0.2",
+    "d3": "^3.5.17",
+    "del": "^6.0.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "gulp": "^4.0.2",
+    "gulp-jshint": "^2.1.0",
+    "gulp-sass": "^4.1.0",
+    "jquery": "^3.5.1",
+    "jshint": "^2.12.0",
+    "mathjax": "^3.1.2",
+    "mongoose": "^5.11.10",
+    "popper.js": "^1.16.1",
+    "pug": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://git@github.com/adamdboult/economoose.git"
+  },
+  "description": "Economoose explores public data",
+  "scripts": {
+    "gulp_debug": "gulp debug"
+  },
+  "license": "SEE LICENSE IN LICENSE.md"
 }
-

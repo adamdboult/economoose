@@ -203,7 +203,7 @@ with open(os.path.join(source_directory, csvFileName), 'r', encoding = source_en
 		if writeBin == 1:
 			destination_writer.writerow(row)
 		rownum = rownum + 1
-		print(rownum)
+		#print(rownum)
 	destination_file.close()
 
 

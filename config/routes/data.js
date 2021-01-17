@@ -1,7 +1,7 @@
 //var express=require('express');
 
-var logger=require(__dirname+'/../winston');
-module.exports=function(app, logger){
+//var logger=require(__dirname+'/../winston');
+module.exports=function(app){
     'use strict';
     var DataSerie=require(__dirname+'/../models/data.js');
 //    var router=express.Router();
@@ -11,7 +11,7 @@ module.exports=function(app, logger){
     app.get('/dpi/:id', function(req, res) {
 	DataSerie.find({'_id': req.params.id},function(err, idw) {
 	    if (err){
-		logger.debug("doh");
+		console.error("doh");
 		res.send(err);
 	    }
 	    res.json(idw);

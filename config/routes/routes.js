@@ -1,7 +1,8 @@
 //var express=require('express');
-var fs=require('fs');
+//var fs=require('fs');
 //var https=require('https');
 //var parseString = require('xml2js').parseString;
+/*
 var modelArray=[];
 var blogArray=[];
 var rssString='<?xml version="1.0" encoding="UTF-8" ?>';
@@ -19,8 +20,8 @@ var postTitle;
 var postDate;
 var postNoType;
 var postFull;
-
-module.exports = function(app, logger){
+*/
+module.exports = function(app){
     'use strict';
     //var DataSerie=require(__dirname+'/../models/data.js');
     //var rootObject={root:__dirname+'/../../public'};

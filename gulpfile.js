@@ -1,128 +1,116 @@
 "use strict";
 /*jshint node:true */
 
-//////////////////
-/* DEPENDENCIES */
-//////////////////
-// include gulp
-var gulp = require('gulp'); 
-
-// include plug-ins
+// Dependencies
+var gulp   = require('gulp'); 
 var jshint = require('gulp-jshint');
-//var changed = require('gulp-changed');
-//var minifyHTML = require('gulp-minify-html');
-var concat = require('gulp-concat');
-var stripDebug = require('gulp-strip-debug');
-var uglify = require('gulp-uglify');
-var autoprefix = require('gulp-autoprefixer');
-//var minifyCSS = require('gulp-minify-css');
-var sass = require('gulp-sass');
-var rmdir = require('rimraf');
-var fs = require('fs');
-var shell = require('gulp-shell');
-var Q = require('q');
+var sass   = require('gulp-sass');
+var exec   = require('child_process').exec;
+var del    = require('del');
 
-/////////////////
-/* DIRECTORIES */
-/////////////////
+// JS Hint
+gulp.task('jshint', function(cb) {
 
-var jsConcatFilesData = [__dirname+'/src/scripts/coreData.js'];
-
-var jshintFiles = [
-    __dirname+'/server.js',
-    __dirname+'/gulpfile.js',
-    __dirname+'/config/routes/data.js',
-    __dirname+'/src/scripts/coreData.js',
-];
-var stylesFiles = [
-    //bowerDir+'/bootstrap/dist/css/bootstrap.css',
-    //bowerDir+'/Bootflat/bootflat/css/bootflat.min.css',
-    //bowerDir+'/bootstrap-theme-bootswatch-flatly/css/bootstrap.min.css',
-    //bowerDir+'/bootstrap-material-design/dist/css/roboto.min.css',
-    //bowerDir+'/bootstrap-material-design/dist/css/material.min.css',
-    //bowerDir+'/bootstrap-material-design/dist/css/ripples.min.css',
-    //bowerDir+'/flat-ui/dist/css/flat-ui.min.css',
-    __dirname+'/src/styles/core.scss'
-];
-
-gulp.task('clean', function() {
-    var deferred = Q.defer();
-    rmdir(__dirname+'/public', function(error){
-	rmdir(__dirname+'/data', function(error){
-	    fs.mkdirSync(__dirname+'/public');
-	    fs.mkdirSync(__dirname+'/data');
-	    deferred.resolve();
-	});
-    });
-    return deferred.promise;
-});
-
-
-gulp.task('datepicker',['clean'],function() {
-    gulp.src(datepickerFolder,{base:bowerDir+'/bootstrap-datepicker/js'})
-	.pipe(gulp.dest(__dirname+'/public/js/datepicker/'));
-});
-
-// JS hint task
-gulp.task('jshint', ['clean'], function() {
-    gulp.src(jshintFiles)
+    gulp.src([__dirname+'/server.js', __dirname+'/gulpfile.js', __dirname+'/config/**/*.js', __dirname+'/src/**/*.js'])
 	.pipe(jshint())
 	.pipe(jshint.reporter('default'));
-});
-
-// JS concat, strip debugging and minify
-gulp.task('scripts', ['clean'], function() {
-    gulp.src(jsConcatFilesData)
-	.pipe(concat('coreData.js'))
-	.pipe(stripDebug())
-	.pipe(uglify())
-	.pipe(gulp.dest(__dirname+'/public/js/'));
-});
-
-gulp.task('scripts-debug', ['clean'], function() {
-    gulp.src(jsConcatFilesData)
-	.pipe(concat('coreData.js'))
-	.pipe(gulp.dest(__dirname+'/public/js/'));
-});
-
-
-gulp.task('styles', ['clean'], function() {
-    gulp.src(stylesFiles)
-	.pipe(concat('styles.scss'))
-        .pipe(sass())
-	.pipe(autoprefix('last 2 versions'))
-	//.pipe(minifyCSS({keepSpecialComments:false}))
-    //	.pipe(stripDebug())
-	.pipe(gulp.dest(__dirname+'/public/css/'));
-});
-// minify new images
-gulp.task('imagemin', ['clean'], function() {
-    var imgSrc = __dirname+'/src/img/compiled/*',
-	imgDst = __dirname+'/public/img';
     
-    gulp.src(imgSrc)
-	.pipe(gulp.dest(imgDst));
+    cb();
+    
 });
 
-// jade
-gulp.task('jade', ['clean'], function() {
-    var YOUR_LOCALS = {};
+// Empty folders
+gulp.task('emptyDestFolders', function(cb) {
+
+    del.sync([
+        __dirname+'/data',
+        __dirname+'/public'
+    ]);
+    
+    cb();
+    
+});
+
+// Favicon
+gulp.task('favicon', function(cb) {
+
+    gulp.src(__dirname + '/src/img/compiled/*')
+	.pipe(gulp.dest(__dirname+'/public/'));
+
+    cb();
+    
+});
+
+// Packages
+gulp.task('packages', function(cb) {
+    
+    // Mathjax
+    gulp.src(__dirname+'/node_modules/mathjax/es5/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/mathjax/'));
+    
+    // Angular
+    gulp.src(__dirname+'/node_modules/angular/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/angular/'));
+    
+    // Angular-route
+    gulp.src(__dirname+'/node_modules/angular-route/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/angular-route/'));
+    
+    // D3
+    gulp.src(__dirname+'/node_modules/d3/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/d3/'));
+    
+    // Bootstrap
+    gulp.src(__dirname+'/node_modules/bootstrap/dist/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/bootstrap/'));
+    
+    // JQuery
+    gulp.src(__dirname+'/node_modules/jquery/dist/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/jquery/'));
+    
+    // Popper
+    gulp.src(__dirname+'/node_modules/popper.js/dist/umd/**/*')
+      .pipe(gulp.dest(__dirname+'/public/packages/popper.js/'));
+
+    cb();
+    
+});
+
+// Scripts
+gulp.task('scripts', function(cb) {
+    
+    gulp.src(__dirname+'/src/js/**/*')
+      .pipe(gulp.dest(__dirname+'/public/js/'));
+    
+    cb();
+    
+});
+
+// Styles
+gulp.task('styles', function(cb) {
+
+    gulp.src(__dirname+'/src/styles/**/*.scss')
+      .pipe(sass())
+      .pipe(gulp.dest(__dirname+'/public/css/'));
+       
+    gulp.src(__dirname+'/src/styles/**/*.css')
+       .pipe(gulp.dest(__dirname+'/public/css/'));
+
+    cb();
+    
+});
+
+// CSV Process
+gulp.task('csvProcess', function(cb) {
+
+    exec('./csv-manipulation.py', function(err, stdout, stderr) {
+        console.log(stdout);
+        console.log(stderr);
+        cb(err);
+    });
 
 });
 
-
-gulp.task('csvProcess',['clean'], shell.task([
-    './csv-manipulation.py'
-]));
-
-gulp.task('nonScript', ['styles', 'jade', 'imagemin', 'csvProcess'], function(){
-});
-//gulp.task('nonScript',['styles','jade','imagemin','fonts','csvProcess','mathjax','datepicker','fallbackjs'], function(){
-//});
-
-gulp.task('debug', ['nonScript', 'scripts-debug', 'jshint'], function(){
-});
-
-gulp.task('default', ['nonScript', 'scripts'], function(){
-});
+// Exports
+exports.default = gulp.series('jshint', 'emptyDestFolders', 'favicon', 'packages', 'scripts', 'styles', 'csvProcess');
 

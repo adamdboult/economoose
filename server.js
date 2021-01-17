@@ -1,51 +1,58 @@
 "use strict";
 /*jshint node:true */
 
-//////////////////
-/* Dependencies */
-//////////////////
+// Dependencies
+var express  = require('express');
+var fs       = require('fs');
+var http     = require('http');
+var mongoose = require('mongoose');
 
-//WINSTON
-var logger = require(__dirname + '/config/winston');
+////////////////////////////////////
+/* Process command line arguments */
+////////////////////////////////////
 
-//DEPENDENCIES, 'jade' not included but referenced later
-var express  = require('express'),
-    mongoose = require('mongoose'),
-    fs       = require('fs'),
-    http     = require('http'),
-    favicon  = require('serve-favicon')
+var http_port = 8080;
+if (process.argv[2] != null) {
+    http_port = process.argv[2];
+}
 
-////////////
-/* config */
-////////////
-var configObj = JSON.parse(fs.readFileSync(__dirname + '/config.json' , 'utf8'));
+var mongo_domain = "127.0.0.1";
+if (process.argv[3] != null) {
+    mongo_domain = process.argv[3];
+}
 
+var mongo_port = 27017;
+if (process.argv[4] != null) {
+    mongo_port = process.argv[4];
+}
 
-/////////////
-/* Express */
-/////////////
-
-//START EXPRESS
-var app = express();
-
-//FAVICON
-app.use(favicon(__dirname + configObj.favicon));
-
+console.log("HTTP port is: "   + http_port);
+console.log("Mongo domain is: "+ mongo_domain);
+console.log("Mongo port is: "  + mongo_port);
 
 ///////////
-/* MONGO */
+/* Mongo */
 ///////////
-//CONNECT TO MONGODB
-//mongoose.connect('mongodb://localhost/' + configObj.databaseName, function(err) {
+var database_name = "economoose";
 
-// NB: latter is for docker
-//mongoose.connect('mongodb://127.0.0.1:27017/' + configObj.databaseName, function(err) {
-mongoose.connect('mongodb://economoose_mongo:27018/' + configObj.databaseName, function(err) {
-    if (err) logger.debug("ERR" + err);
+var mongo_path = 'mongodb://' + mongo_domain + ':' + mongo_port + '/' + database_name;
+console.log("Mongo path is: " + mongo_path);
+mongoose.connect(mongo_path, { useNewUrlParser: true, useUnifiedTopology: true}, function(err) {
+    if (err) console.error("ERR" + err);
 });
-console.log("here?");
 
-
+/*
+if (console.log(process.argv[2]) === "docker") {
+    mongoose.connect('mongodb://economoose_mongo:27018/' + configObj.databaseName, { useNewUrlParser: true, useUnifiedTopology: true}, function(err) {
+        if (err) console.error("ERR" + err);
+    });
+}
+else {
+    mongoose.connect('mongodb://127.0.0.1:27017/' + configObj.databaseName, { useNewUrlParser: true, useUnifiedTopology: true}, function(err) {
+        if (err) console.error("ERR" + err);
+    });
+}
+*/
 
 //MODELS
 var DataSerie = require(__dirname + '/config/models/data.js');
@@ -69,7 +76,7 @@ var filterInit=function() {
 		}
 	    }
 	}
-	logger.debug("Filt: " + filterArray);	
+	console.log("Filt: " + filterArray);	
     });
 };
 
@@ -82,7 +89,8 @@ db.collection('jsonalls').drop();
 var jsonObj;
 var addToMongoCallback = function(jsonObj) {
 
-    db.collection('jsonalls').save(jsonObj, function() {
+    //db.collection('jsonalls').save(jsonObj, function() {
+    db.collection('jsonalls').insertOne(jsonObj, function() {
 	j = j + 1;
 	if (j === jsonImport.length) {
 	    filterInit();
@@ -91,9 +99,10 @@ var addToMongoCallback = function(jsonObj) {
     });
 };
 
-for (i = 0; i < jsonImport.length; i++) {	
+for (i = 0; i < jsonImport.length; i++) {
+    //console.log("hi7");
     if (jsonImport[i] === "") {
-	logger.debug("bad: " + i);
+	console.log("bad: " + i);
 	j = j + 1;
 	if (j === jsonImport.length) {
 	    filterInit();
@@ -103,7 +112,7 @@ for (i = 0; i < jsonImport.length; i++) {
 	jsonObj = JSON.parse(jsonImport[i]);
 	addToMongoCallback(jsonObj);
     }
-
+    //console.log("hi8");
     if (jsonImport.length === i + 1) {
     }
 }
@@ -115,52 +124,26 @@ var favouriteObject = {};
 var favInit = function() {
     DataSerie.find({"Favourite": "1"}, 'label Favourite', function(err, favObj) {
 	if (err){
-	    logger.debug("Error: " + err);
+	    console.error("Error: " + err);
 	}
 	favouriteObject= favObj;
-	logger.debug("Favs: " + favObj);
+	console.log("Favs: " + favObj);
     });
 };
 
-////////////
-/* ROUTES */
-////////////
+////////////////////////
+/* Express and routes */
+////////////////////////
+var app = express();
+
 app.use(express.static(__dirname + '/public'));// set the static files location /public/img will be /img for users
 
-app.locals.pretty=true;
-app.set('views',__dirname+'/src/jade/');
-app.set('view engine', 'jade');
+//app.locals.pretty=true;
+app.set('views',__dirname+'/src/pug/');
+app.set('view engine', 'pug');
 
-require(__dirname+'/config/routes/routes')(app, logger);
-require(__dirname+'/config/routes/data')(app, logger);
-
-// Other?
-/*
-app.get('/sitemap.xml', function(req, res){
-    sitemap.toXML(function(xml){
-	res.header('Content-Type', 'application/xml');
-	res.send(xml);
-    });
-});
-*/
-
-// Other?
-
-var robotSend = "";
-var robotSendArray = [
-    "User-agent: *",
-    "Sitemap: /sitemap.xml"
-];
-var robotSendArrayEntry;
-for (robotSendArrayEntry in robotSendArray){
-    robotSend+="\n"+robotSendArray[robotSendArrayEntry];
-}
-
-app.get('/robots.txt', function(req,res){
-    res.type('text/plain');
-    //    res.send("User-agent: *\nSitemap: /sitemap.xml");
-    res.send(robotSend);
-});
+require(__dirname+'/config/routes/routes')(app);
+require(__dirname+'/config/routes/data')(app);
 
 // Other
 
@@ -194,14 +177,14 @@ app.use(function(req, res, next){
     res.type('txt').send('Not found');
 });
 
-//////////
-/* HTTP */
-//////////
-var HTTPportnum=configObj.ports.http;
-var HTTPport = process.env.PORT || HTTPportnum;
 
+
+/////////////////
+/* HTTP server */
+/////////////////
 var httpServer=http.createServer(app);
+var HTTPport = process.env.PORT || http_port;
 httpServer.listen(HTTPport);
 
-logger.debug("App listening on port " + HTTPport);
+console.log("App listening on port " + http_port);
 

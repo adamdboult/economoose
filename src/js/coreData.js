@@ -140,8 +140,11 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
     $scope.newFilterOption=$scope.invisibleFilterOptions[0];
     //get map of sources
     $http.get('/path/a')
-	.success(function(filters){
+	//.then(function(filters){
+	.then(function(response){
+	    var filters = response.data;
 	    var i;
+	    //$scope.filterOptions=filters;
 	    $scope.filterOptions=filters;
 	    $scope.visibleFilterOptions=defaultSearchArray;
 	    for (i=0;i<Object.keys($scope.filterOptions).length;i++) {
@@ -196,8 +199,11 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
     };
 
     $http.get('/favs/a')
-        .success(function(favs){
-            $scope.favList = favs;
+        .then(function(response){
+            console.log("START");
+            console.log(response.data);
+            var favlist = response.data;
+            $scope.favList = favlist;
 	    $scope.getData($scope.favList[1]._id);
 	});
     
@@ -219,7 +225,8 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	console.log("romeo"+$scope.pageSelect);
 
 	$http.get('/cpi/'+encodeURIComponent(JSON.stringify(filterSend)))
-	    .success(function(look){
+	    .then(function(response){
+	        var look = response.data
 		$scope.pageCount=look[look.length-1];
 		$scope.pageCountArray=$scope.getNumber($scope.pageCount);
 		if ($scope.pageReset!==0){
@@ -339,7 +346,8 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	}
 	else {
 	    $http.get('/dpi/'+seriesUsed)
-		.success(function(blobs){
+		.then(function(response){
+		    var blobs = response.data;
 		    var newobj = blobs[0];
 		    if ($scope.localIndex.indexOf(newobj.filter[xUnits])===-1) {
 			var labelObject ={label:newobj.filter[xUnits],data:-1, _id:-1,filter:[{Type:"Other"}]};

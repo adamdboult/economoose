@@ -37,6 +37,10 @@ myApp.directive("mathjaxBind", function() {
 });
 */
 
+/////////////
+/* Mathjax */
+/////////////
+
 myApp.directive('mathJaxBind', function() {
   console.log("hi");
   var refresh = function(element) {
@@ -54,11 +58,16 @@ myApp.directive('mathJaxBind', function() {
   };
 });
 
+////////////////
+/* Controller */
+////////////////
+
 myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', function($rootScope, $scope, $http, $window){
 
     "use strict";
-    //INITIALISATION
-
+    ////////////////////
+    /* INITIALISATION */
+    ////////////////////
     $scope.localSeries=[];
     $scope.dotChoices=[];
     //	var dotStandard ={label:"Standard",data:-2, _id:-2,filter:[{Type:"Other"}]};
@@ -77,6 +86,9 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 
     $scope.statsShow=[];
 
+    ///////////////
+    /* Functions */
+    ///////////////
     $scope.toggleAddFilter=function(count) {
 	if($scope.showAddDetails[count]===1) {
 	    $scope.showAddDetails[count]=0;
@@ -348,6 +360,10 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	}
     };
     console.log("got here helllloooooo");
+    
+    ///////////////////////////
+    /* Update graph function */
+    ///////////////////////////
     $scope.updateGraph = function(seriesUsed,secondSeriesUsed,dotSeriesUsed) {
 	var i;
 	var j;
@@ -666,6 +682,10 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	    $scope.drawGraph();
 	}
     };
+    
+    ////////////////
+    /* Draw graph */
+    ////////////////
     $scope.drawGraph=function(){
 	$scope.addColour();
 	$scope.dataExistError=0;
@@ -771,10 +791,10 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	
 	var yScaleDigits=Math.floor(Math.log(yScaleSeed)/Math.LN10 +1);
 	
-	var xScale = d3.scale.linear()
+	var xScale = d3.scaleLinear()
 	    .domain(xDomain)
 	    .range([paddingmarginxleft, w-paddingmarginxright]);
-	var yScale = d3.scale.linear()
+	var yScale = d3.scaleLinear()
 	    .domain(yDomain)
 	    .range([h-paddingmarginybottom, paddingmarginytop]);
 
@@ -793,28 +813,24 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	    var scaleExtension={"0":"","1":"k","2":"mm","3":"bn","4":"tn"};
 	    return (d/Math.pow(10,reduction*3))+scaleExtension[String(reduction)];
 	};
-	var xAxis = d3.svg.axis()
-	    .scale(xScale)
-	    .orient("bottom")
+	var xAxis = d3.axisBottom(xScale)
+	    //.orient("bottom")
 	    .ticks(xTicks)
 	    .tickFormat(function(d) {return tickFormatSubx(d);});//removes commas
-	var yAxis = d3.svg.axis()
-	    .scale(yScale)
-	    .orient("left")
+	var yAxis = d3.axisLeft(yScale)
+	    //.orient("left")
 	    .ticks(yTicks)
 	    .tickFormat(function(d) {return tickFormatSuby(d);});//removes commas
 
 	function make_x_axis() {        
-	    return d3.svg.axis()
-		.scale(xScale)
-		.orient("bottom")
+	    return d3.axisBottom(xScale)
+		//.orient("bottom")
 		.ticks(xTicks);
 	}
 
 	function make_y_axis() {        
-	    return d3.svg.axis()
-		.scale(yScale)
-		.orient("left")
+	    return d3.axisLeft(yScale)
+		//.orient("left")
 		.ticks(yTicks);
 	}
 
@@ -825,7 +841,7 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	    .attr("height", h);
 	//var div = d3.select("body").append("div")
 
-//	var pathStyle= {"stroke": "dark blue","stroke-width": "2","fill": "none"};
+	//var pathStyle= {"stroke": "dark blue","stroke-width": "2","fill": "none"};
 	var gridPathStyle={"stroke-width":"0","fill": "none", "opacity":"1"};
 
 	var gridTickStyle={"stroke": "lightgrey","opacity": "1"};
@@ -868,13 +884,13 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	$scope.modelFormula="\\(" + $scope.statsFormula[$scope.lineMatch] + "\\)";
 	console.log("Formula is: ");
 	console.log($scope.modelFormula);
-	var line = d3.svg.line()
+	var line = d3.line()
 	    .x(function(d) { return xScale(d[0]); })
 	    .y(function(d) { return yScale(d[1]); })
-	    .interpolate("basis");
+	    //.interpolate("basis");
+	    .curve(d3.curveBasis);
 	var xMouseOver=[];
 	var yMouseOver=[];
-	var lineFitStyle={"fill": "none","stroke": "black","stroke-width": "2px"};
 	var legendStyle={"font": "12px sans-serif"};
 	var mouseOverFunction=function(d) {
 	    div.transition()
@@ -960,12 +976,17 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 		.attr("dy", ".71em")
 		.style(legendStyle);*/
 
+	    var lineFitStyle={"fill": "none","stroke": "black","stroke-width": "2px"};
+
 	    svg.append("path")
 		.datum($scope.lineData[i][$scope.lineMatch])
 		.attr("class", "line")
 		.attr("d", line)
-		.style(lineFitStyle)
-		.style("stroke",$scope.d3colours[i].darker());
+		//.style(lineFitStyle)
+		.attr("fill", "none")
+		.attr("stroke", "black")
+		.attr("stroke-width", "2");
+		//.style("stroke",$scope.d3colours[i].darker());
 	}
 
 	if($scope.yAxisProblem===1){
@@ -1041,6 +1062,9 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	//end graph d3
     };
 
+    ///////////////////////
+    /* Save SVG function */
+    ///////////////////////
     $scope.saveSVG = function() {
 	var html = d3.select("svg")
 	    .attr("version", 1.1)
@@ -1074,6 +1098,9 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	
     };
 
+    /////////////////////
+    /* Resize function */
+    /////////////////////
     angular.element($window).bind('resize',function(){
 	//var angular.element($window).bind('resize')=function(){
 	if ($scope.dataExistError===0) {
@@ -1081,6 +1108,9 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	}
     });
 
+    /////////////////////
+    /* Other functions */
+    /////////////////////
     $scope.toggleTable=function(){
 	$scope.showTable=1-$scope.showTable;
     };

@@ -1,24 +1,24 @@
 version: "3"
 services:
   economoose_nodejs:
-    container_name: economoose_nodejs
+    container_name: economoose-nodejs
     build:
         context: ./
         dockerfile: ./docker/web/Dockerfile
     restart: unless-stopped
     ports:
-      - "3123:3123"
+      - "3123:80"
     depends_on:
-      - economoose_mongo
+      - economoose-mongo
   economoose_mongo:
-    container_name: economoose_mongo
+    container_name: economoose-mongo
     image: webhippie/mongodb
-    command: mongod --port 27018 --bind_ip 0.0.0.0
+    command: mongod --port 27017 --bind_ip 0.0.0.0
     restart: unless-stopped
     volumes:
       - /data/db/economoose_mongo:/data/db
-    ports:
-      - '27018:27018'
+    expose:
+      - '27017'
 #  mongo:
 #    container_name: mongo
 #    image: mongo

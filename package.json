@@ -9,7 +9,7 @@
     "fs": "0.0.1-security",
     "jquery": "^3.5.1",
     "mathjax": "^3.1.2",
-    "mongoose": "^5.11.10",
+    "mongoose": "^6.1.8",
     "popper.js": "^1.16.1",
     "pug": "^3.0.2"
   },

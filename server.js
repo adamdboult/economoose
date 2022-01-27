@@ -85,6 +85,9 @@ var JSONloc = __dirname + '/data/json/0.json';
 var jsonImport = fs.readFileSync(JSONloc, 'utf8').toString().split('\n');
 var i, j = 0;
 var db = mongoose.connection;
+console.log("about to test");
+console.log(mongoose.connection.readyState);
+console.log("finished test");
 db.collection('jsonalls').drop();
 var jsonObj;
 var addToMongoCallback = function(jsonObj) {

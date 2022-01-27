@@ -1,6 +1,6 @@
 version: "3"
 services:
-  economoose_nodejs:
+  economoose-nodejs:
     container_name: economoose-nodejs
     build:
         context: ./
@@ -10,7 +10,7 @@ services:
       - "3123:80"
     depends_on:
       - economoose-mongo
-  economoose_mongo:
+  economoose-mongo:
     container_name: economoose-mongo
     image: webhippie/mongodb
     command: mongod --port 27017 --bind_ip 0.0.0.0

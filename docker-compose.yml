@@ -12,31 +12,11 @@ services:
       - economoose-mongo
   economoose-mongo:
     container_name: economoose-mongo
-    image: webhippie/mongodb
+    image: webhippie/mongodb:4
     command: mongod --port 27017 --bind_ip 0.0.0.0
     restart: unless-stopped
     volumes:
       - /data/db/economoose_mongo:/data/db
     expose:
       - '27017'
-#  mongo:
-#    container_name: mongo
-#    image: mongo
-#    command: mongod --port 27018
-#    restart: unless-stopped
-#    volumes:
-#      - ./mongo:/data/db
-#    ports:
-#      - '27018:27018'
-#  mongo:
-#    container_name: mongo
-#    build:
-#        context: ./
-#        dockerfile: ./docker/db/Dockerfile
-#    command: mongod --port 27018 --bind_ip_all
-#    restart: unless-stopped
-#    volumes:
-#      - ./mongo2:/data/db
-#    ports:
-#      - '27018:27018'
 

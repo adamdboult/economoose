@@ -1,12 +1,8 @@
-bower_components/
-data/
-node_modules/
-public/
 *.log
 *~
 *.pyc
+data/
+node_modules/
+public/
 *__pycache__/
-mongo/
-mongo2/
-mongo3/
 .sass-cache/

@@ -1,11 +1,8 @@
 //var express=require('express');
 
-//var logger=require(__dirname+'/../winston');
 module.exports=function(app){
     'use strict';
     var DataSerie=require(__dirname+'/../models/data.js');
-//    var router=express.Router();
-    //var mongoose=require('mongoose');
     var rootObject={root:__dirname+'/../../public'};
 
     app.get('/dpi/:id', function(req, res) {
@@ -15,7 +12,6 @@ module.exports=function(app){
 		res.send(err);
 	    }
 	    res.json(idw);
-	    //logger.debug("send: "+idw);
 	});
     });
     var filterMatchIdentity="Any";
@@ -47,5 +43,5 @@ module.exports=function(app){
 	    });
 	});
     });
-//    return router;
+
 };

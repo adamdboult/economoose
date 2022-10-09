@@ -1,41 +1,6 @@
-/*global jQuery:false */
-/*jshint browser:true */
-/*global angular:false */
-/*global $:false */
-/*global d3:false */
-/*global MathJax:false */
-
-///*MathJax.Hub.Config({
-//  skipStartupTypeset: true,
-//  messageStyle: "none",
-//  "HTML-CSS": {
-//  showMathMenu: false
-//  }
-//  });*/
-
-//MathJax.Hub.Config({skipStartupTypeset: true});
-//MathJax.Hub.Configured();
 
 var myApp = angular.module('myApp', []);
 
-/*
-myApp.directive("mathjaxBind", function() {
-    "use strict";
-    return {
-        restrict: "A",
-        controller: ["$scope", "$element", "$attrs", function($scope, $element, $attrs) {
-            $scope.$watch($attrs.mathjaxBind, function(value) {
-                var $script = angular.element("<script type='math/tex'>")
-                //    .html(value === undefined ? "" : value);
-		    .html(value);
-                $element.html("");
-                $element.append($script);
-                MathJax.Hub.Queue(["Reprocess", MathJax.Hub, $element[0]]);
-            });
-        }]
-    };
-});
-*/
 
 /////////////
 /* Mathjax */
@@ -89,50 +54,49 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
     ///////////////
     /* Functions */
     ///////////////
-    $scope.toggleAddFilter=function(count) {
-	if($scope.showAddDetails[count]===1) {
-	    $scope.showAddDetails[count]=0;
+    $scope.toggleAddFilter = function(count) {
+	if($scope.showAddDetails[count] === 1) {
+	    $scope.showAddDetails[count] = 0;
 	}
 	else {
-	    $scope.showAddDetails[count]=1;
+	    $scope.showAddDetails[count] = 1;
 	}
     };
 
-    $scope.toggleStatsShow=function(count) {
-	if($scope.statsShow[count]===1) {
-	    $scope.statsShow[count]=0;
+    $scope.toggleStatsShow = function(count) {
+	if($scope.statsShow[count] === 1) {
+	    $scope.statsShow[count] = 0;
 	}
 	else {
-	    $scope.statsShow[count]=1;
+	    $scope.statsShow[count] = 1;
 	}
     };
 
     $scope.toggleLocalFilter=function(count) {
-	if($scope.showLocalDetails[count]===1) {
-	    $scope.showLocalDetails[count]=0;
+	if($scope.showLocalDetails[count] === 1) {
+	    $scope.showLocalDetails[count] = 0;
 	}
 	else {
-	    $scope.showLocalDetails[count]=1;
+	    $scope.showLocalDetails[count] = 1;
 	}
     };
 
     $scope.addColour=function(){
-	var i,j;
-	var colMin=50;
-	var colMax=200;
+	var i, j;
+	var colMin = 50;
+	var colMax = 200;
 	$scope.d3colours=[];
-	for (i=0;i<$scope.jq2plotdata.length;i++) {
+	for (i = 0; i < $scope.jq2plotdata.length; i++) {
 	    var colArr=[];
 	    for(j=0;j<3;j++){
-		colArr.push(colMin+Math.random()*(colMax-colMin));
+		colArr.push(colMin+Math.random() * (colMax - colMin));
 	    }
-	    $scope.d3colours.push(d3.rgb(colArr[0],colArr[1],colArr[2]));
+	    $scope.d3colours.push(d3.rgb(colArr[0], colArr[1], colArr[2]));
 	}
     };
-    //$scope.addColour();
 
-    var defaultSearchArray=['Subject','Country'];
-    var defaultSearchValues=['Government','United Kingdom'];
+    var defaultSearchArray = ['Subject','Country'];
+    var defaultSearchValues = ['Government', 'United Kingdom'];
     $scope.invisibleFilterOptions=[{
 	name:"--Select below--",
 	show:true
@@ -1241,3 +1205,4 @@ myApp.controller('mainController', ['$rootScope', '$scope', '$http','$window', f
 	document.body.removeChild(link);
     };
 }]);
+

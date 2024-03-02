@@ -10,7 +10,7 @@
 ##########
 all: empty_dest favicon packages scripts styles csvProcess
 
-    
+
 empty_dest:
 	rm -rf ./data/
 	rm -rf ./public/

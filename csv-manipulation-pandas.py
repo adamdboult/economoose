@@ -6,7 +6,7 @@
 #import unicodecsv
 import os
 #import codecs
-#import shutil
+import shutil
 #import sys
 import json
 
@@ -80,23 +80,17 @@ source_file_path = os.path.join(source_directory, source_file_name)
 ######################
 # Set up destination #
 ######################
-"""
 destination_path = os.path.join(dir, 'data/csv/corrected.csv')
 destination_dir = os.path.dirname(destination_path)
 if os.path.exists(destination_dir):
 	shutil.rmtree(destination_dir)
 os.makedirs(destination_dir)
-destination_file = open(destination_path, 'w', encoding = 'utf-8')
-destination_writer = csv.writer(destination_file, delimiter = ',')
-"""
+
 ############
 # Load CSV #
 ############
-#imported_data = pd.read_html(source_file_path)
-#imported_data = pd.read_excel(source_file_path)
 df = pd.read_csv(source_file_path, delimiter=useDelimiter, encoding=source_encoding)
-print(df)
-
+print(df.columns)
 #########
 # Clean #
 #########
@@ -109,22 +103,23 @@ print(df)
 ####
 
 df = pd.melt(df, var_name='Year', value_name='Value', id_vars=["WEO Country Code", "ISO", "WEO Subject Code", "Country", "Subject Descriptor", "Subject Notes", "Units", "Scale", "Country/Series-specific Notes", "Estimates Start After"])
-
-print(df)
+print(df.columns)
+sefsefs
+#print(df)
 
 ####
 # Drop unwanted columns
 ####
 # Notes
-#df = df.drop('Subject Notes', 1)
-#df = df.drop('Country/Series-specific Notes', 1)
+#df = df.drop('Subject Notes', axis=1)
+#df = df.drop('Country/Series-specific Notes', axis=1)
 
 # Extra country stuff
-#df = df.drop('WEO Country Code', 1)
-#df = df.drop('ISO', 1)
+#df = df.drop('WEO Country Code', axis=1)
+#df = df.drop('ISO', axis=1)
 
 # Subject stuff
-#df = df.drop('WEO Subject Code', 1)
+#df = df.drop('WEO Subject Code', axis=1)
 
 print(df)
 
@@ -138,10 +133,13 @@ df["Value"] = np.where(df["Value"] == "--", np.nan, df["Value"])
 #df = df.assign(Value = [Value * 1000000 if Scale == "Millions" else Value for Value in df["Value"]])
 
 #df['Value'] = [ if a > 0 else 'neg' for a in df['a']]
-print("HI?")
-print(df["Value"])
-print(df["Value"].astype(float) * 2)
-print(df["Value"].astype(float) * 2)
+#print("HI?")
+df['Value'] = df['Value'].str.replace(',', '')
+#df['Value'] = pd.to_numeric(df['Value'], errors='coerce')
+df['Value'] = pd.to_numeric(df['Value'], errors='raise')
+#print(df["Value"])
+#print(df["Value"].astype(float) * 2)
+#print(df["Value"].astype(float) * 2)
 
 df['Value'] = np.where(df['Scale'] == 'Millions', df['Value'] * 1000000, df['Value'])
 print("HI?")
@@ -156,7 +154,7 @@ df['Value'] = np.where(df['Scale'] == 'Billions', df['Value'] * 1000000000, df['
 	"": 1
     },
 """
-#df = df.drop('Scale', 1)
+#df = df.drop('Scale', axis=1)
 
 print("HI?")
 
@@ -166,11 +164,25 @@ print("HI?")
 # Remove the forecasts
 ####
 
-df = df.drop('Estimates Start After', 1)
 print("HI?")
 print(df)
 
 print("HI?")
+
+#df = pd.melt(df, var_name='Year', value_name='Value', id_vars=["WEO Country Code", "ISO", "WEO Subject Code", "Country", "Subject Descriptor", "Subject Notes", "Units", "Scale", "Country/Series-specific Notes", "Estimates Start After"])
+
+#df = df.pivot(index='ID', columns='Attribute')
+
+# Assuming the melted DataFrame is df
+df = df.pivot(index=["WEO Country Code", "ISO", "WEO Subject Code", "Country", 
+                          "Subject Descriptor", "Subject Notes", "Units", "Scale", 
+                          "Country/Series-specific Notes", "Estimates Start After"], 
+                   columns='Year', values='Value').reset_index()
+                   
+# Optional: Rename the columns if needed to make them more readable
+df.columns.name = None  # Remove the column index name
+df = df.drop('Estimates Start After', axis=1)
+
 """
 #with open(source_directory + csvFileName, 'r', encoding = source_encoding) as csvfile:
 with open(source_directory + source_file_name, 'r') as csvfile:
@@ -257,7 +269,9 @@ with open(source_directory + source_file_name, 'r') as csvfile:
 		rownum = rownum + 1
 	destination_file.close()
 print("Done?")
-exec(open('csvtojson.py').read())
 """
 
-print("done?")
+
+df.to_csv(destination_path, index=False)
+print("done at end?")
+

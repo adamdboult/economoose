@@ -208,7 +208,6 @@ with open(os.path.join(source_directory, csvFileName), 'r', encoding = source_en
 
 
 print("Done?")
-exec(open('csvtojson.py').read())
 
 
 

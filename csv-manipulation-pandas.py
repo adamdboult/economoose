@@ -101,10 +101,19 @@ print(df.columns)
 ####
 # Melt
 ####
-
-df = pd.melt(df, var_name='Year', value_name='Value', id_vars=["WEO Country Code", "ISO", "WEO Subject Code", "Country", "Subject Descriptor", "Subject Notes", "Units", "Scale", "Country/Series-specific Notes", "Estimates Start After"])
-print(df.columns)
-sefsefs
+#print("hi at print")
+#print(df.head)
+#print("AB")
+non_year_columns = [x for x in df.columns if x[0] not in ["1", "2"]]
+#print([x for x in df.columns if x[0] not in ["1", "2"]])
+#print("CD")
+#print([x for x in df.columns])
+#print("EF")
+df = pd.melt(df, var_name='Year', value_name='Value', id_vars=non_year_columns)
+#df.to_csv("test.csv")
+#print(df.columns)
+#print(df.head)
+#sefsefs
 #print(df)
 
 ####

@@ -15,5 +15,5 @@ WORKDIR /Projects/economoose/
 COPY . .
 RUN pip3 install -r requirements.txt
 
-RUN npm install --package-lock-only && npm ci && make
+RUN npm ci && make
 CMD [ "node", "server.js", "80", "economoose-mongo", "27017" ]

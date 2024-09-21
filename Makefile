@@ -3,7 +3,13 @@
 # README #
 ##########
 
-
+.PHONY: all
+.PHONY: empty_dest
+.PHONY: favicon
+.PHONY: packages
+.PHONY: scripts
+.PHONY: styles
+.PHONY: csvProcess
 
 ##########
 # JSHINT #

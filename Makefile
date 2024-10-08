@@ -46,7 +46,7 @@ styles:
 	#sass ./src/styles/core.scss:./public/css/core.css
 	
 csvProcess:
-	python3 ./csv-manipulation.py
-	python3 ./csvtojson.py
+	python ./csv-manipulation.py
+	python ./csvtojson.py
 
 

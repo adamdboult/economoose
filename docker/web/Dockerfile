@@ -7,8 +7,12 @@ RUN apt-get update && apt-get -y install \
 # Needed for the empty folder stuff to work
 WORKDIR /Projects/economoose/
 
-COPY . .
+# Copy package.json and package-lock.json to leverage Docker cache
+COPY package.json package-lock.json ./
+# Install dependencies using npm ci
+RUN npm ci
 
+COPY requirements.txt .
 #RUN pip3 install -r requirements.txt
 RUN python3 -m venv /opt/venv \
     && . /opt/venv/bin/activate \
@@ -18,6 +22,8 @@ RUN python3 -m venv /opt/venv \
 # Ensure the virtual environment is activated for future commands
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN npm ci && make
+COPY . .
+
+RUN make
 
 CMD [ "node", "server.js", "80", "economoose-mongo", "27017" ]

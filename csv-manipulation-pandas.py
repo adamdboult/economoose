@@ -1,13 +1,14 @@
-
 ####################
 # Import libraries #
 ####################
-#import csv
-#import unicodecsv
+# import csv
+# import unicodecsv
 import os
-#import codecs
+
+# import codecs
 import shutil
-#import sys
+
+# import sys
 import json
 
 import numpy as np
@@ -41,38 +42,38 @@ source_file_path = os.path.join(source_directory, source_file_name)
 # Load settings object #
 ########################
 source_directory = os.path.join(dir, "Raw data/IMF")
-source_settings_path = os.path.join(source_directory, 'settings.json')
+source_settings_path = os.path.join(source_directory, "settings.json")
 
 source_settings_file = open(source_settings_path)
 source_settings = source_settings_file.read()
 
 source_settings_object = json.loads(source_settings)
-#json_data=json.loads(jsonstring, object_hook=_decode_dict)
+# json_data=json.loads(jsonstring, object_hook=_decode_dict)
 
 source_file_name = source_settings_object["name"]
-csvdelimiter	 = source_settings_object["delimiter"]
-source_encoding	 = source_settings_object["encoding"]
-#cutOff		 = source_settings_object["cutOff"]
-#scaleObject	 = source_settings_object["scale"]
-#noteArray	 = source_settings_object["noteArray"]
-#filterArray	 = source_settings_object["filterArray"]
-#subjectArray	 = source_settings_object["subjectArray"]
-#favArray	 = source_settings_object["favArray"]
-#headerAppend	 = source_settings_object["headerAppend"]
-#scaleRow	 = source_settings_object["scaleRow"]
-#rowAppend	 = source_settings_object["rowAppend"]
+csvdelimiter = source_settings_object["delimiter"]
+source_encoding = source_settings_object["encoding"]
+# cutOff		 = source_settings_object["cutOff"]
+# scaleObject	 = source_settings_object["scale"]
+# noteArray	 = source_settings_object["noteArray"]
+# filterArray	 = source_settings_object["filterArray"]
+# subjectArray	 = source_settings_object["subjectArray"]
+# favArray	 = source_settings_object["favArray"]
+# headerAppend	 = source_settings_object["headerAppend"]
+# scaleRow	 = source_settings_object["scaleRow"]
+# rowAppend	 = source_settings_object["rowAppend"]
 
 ####
 # Interpret CSV delimiter settings
 ####
 
-if csvdelimiter == 'tab':
-	useDelimiter = '	'
+if csvdelimiter == "tab":
+    useDelimiter = "	"
 else:
-	useDelimiter = ','
+    useDelimiter = ","
 
 
-#source_file_name = configObj["data"]["name"]
+# source_file_name = configObj["data"]["name"]
 
 source_file_path = os.path.join(source_directory, source_file_name)
 
@@ -80,10 +81,10 @@ source_file_path = os.path.join(source_directory, source_file_name)
 ######################
 # Set up destination #
 ######################
-destination_path = os.path.join(dir, 'data/csv/corrected.csv')
+destination_path = os.path.join(dir, "data/csv/corrected.csv")
 destination_dir = os.path.dirname(destination_path)
 if os.path.exists(destination_dir):
-	shutil.rmtree(destination_dir)
+    shutil.rmtree(destination_dir)
 os.makedirs(destination_dir)
 
 ############
@@ -101,34 +102,34 @@ print(df.columns)
 ####
 # Melt
 ####
-#print("hi at print")
-#print(df.head)
-#print("AB")
+# print("hi at print")
+# print(df.head)
+# print("AB")
 non_year_columns = [x for x in df.columns if x[0] not in ["1", "2"]]
-#print([x for x in df.columns if x[0] not in ["1", "2"]])
-#print("CD")
-#print([x for x in df.columns])
-#print("EF")
-df = pd.melt(df, var_name='Year', value_name='Value', id_vars=non_year_columns)
-#df.to_csv("test.csv")
-#print(df.columns)
-#print(df.head)
-#sefsefs
-#print(df)
+# print([x for x in df.columns if x[0] not in ["1", "2"]])
+# print("CD")
+# print([x for x in df.columns])
+# print("EF")
+df = pd.melt(df, var_name="Year", value_name="Value", id_vars=non_year_columns)
+# df.to_csv("test.csv")
+# print(df.columns)
+# print(df.head)
+# sefsefs
+# print(df)
 
 ####
 # Drop unwanted columns
 ####
 # Notes
-#df = df.drop('Subject Notes', axis=1)
-#df = df.drop('Country/Series-specific Notes', axis=1)
+# df = df.drop('Subject Notes', axis=1)
+# df = df.drop('Country/Series-specific Notes', axis=1)
 
 # Extra country stuff
-#df = df.drop('WEO Country Code', axis=1)
-#df = df.drop('ISO', axis=1)
+# df = df.drop('WEO Country Code', axis=1)
+# df = df.drop('ISO', axis=1)
 
 # Subject stuff
-#df = df.drop('WEO Subject Code', axis=1)
+# df = df.drop('WEO Subject Code', axis=1)
 
 print(df)
 
@@ -139,22 +140,22 @@ print(df)
 
 df["Value"] = np.where(df["Value"] == "--", np.nan, df["Value"])
 
-#df = df.assign(Value = [Value * 1000000 if Scale == "Millions" else Value for Value in df["Value"]])
+# df = df.assign(Value = [Value * 1000000 if Scale == "Millions" else Value for Value in df["Value"]])
 
-#df['Value'] = [ if a > 0 else 'neg' for a in df['a']]
-#print("HI?")
-df['Value'] = df['Value'].str.replace(',', '')
-#df['Value'] = pd.to_numeric(df['Value'], errors='coerce')
-df['Value'] = pd.to_numeric(df['Value'], errors='raise')
-#print(df["Value"])
-#print(df["Value"].astype(float) * 2)
-#print(df["Value"].astype(float) * 2)
+# df['Value'] = [ if a > 0 else 'neg' for a in df['a']]
+# print("HI?")
+df["Value"] = df["Value"].str.replace(",", "")
+# df['Value'] = pd.to_numeric(df['Value'], errors='coerce')
+df["Value"] = pd.to_numeric(df["Value"], errors="raise")
+# print(df["Value"])
+# print(df["Value"].astype(float) * 2)
+# print(df["Value"].astype(float) * 2)
 
-df['Value'] = np.where(df['Scale'] == 'Millions', df['Value'] * 1000000, df['Value'])
+df["Value"] = np.where(df["Scale"] == "Millions", df["Value"] * 1000000, df["Value"])
 print("HI?")
-df['Value'] = np.where(df['Scale'] == 'Billions', df['Value'] * 1000000000, df['Value'])
+df["Value"] = np.where(df["Scale"] == "Billions", df["Value"] * 1000000000, df["Value"])
 
-#df["Value"] = df["Value"] * -1
+# df["Value"] = df["Value"] * -1
 """
     "scale": {
 	"Millions": 1000000,
@@ -163,7 +164,7 @@ df['Value'] = np.where(df['Scale'] == 'Billions', df['Value'] * 1000000000, df['
 	"": 1
     },
 """
-#df = df.drop('Scale', axis=1)
+# df = df.drop('Scale', axis=1)
 
 print("HI?")
 
@@ -178,19 +179,31 @@ print(df)
 
 print("HI?")
 
-#df = pd.melt(df, var_name='Year', value_name='Value', id_vars=["WEO Country Code", "ISO", "WEO Subject Code", "Country", "Subject Descriptor", "Subject Notes", "Units", "Scale", "Country/Series-specific Notes", "Estimates Start After"])
+# df = pd.melt(df, var_name='Year', value_name='Value', id_vars=["WEO Country Code", "ISO", "WEO Subject Code", "Country", "Subject Descriptor", "Subject Notes", "Units", "Scale", "Country/Series-specific Notes", "Estimates Start After"])
 
-#df = df.pivot(index='ID', columns='Attribute')
+# df = df.pivot(index='ID', columns='Attribute')
 
 # Assuming the melted DataFrame is df
-df = df.pivot(index=["WEO Country Code", "ISO", "WEO Subject Code", "Country", 
-                          "Subject Descriptor", "Subject Notes", "Units", "Scale", 
-                          "Country/Series-specific Notes", "Estimates Start After"], 
-                   columns='Year', values='Value').reset_index()
-                   
+df = df.pivot(
+    index=[
+        "WEO Country Code",
+        "ISO",
+        "WEO Subject Code",
+        "Country",
+        "Subject Descriptor",
+        "Subject Notes",
+        "Units",
+        "Scale",
+        "Country/Series-specific Notes",
+        "Estimates Start After",
+    ],
+    columns="Year",
+    values="Value",
+).reset_index()
+
 # Optional: Rename the columns if needed to make them more readable
 df.columns.name = None  # Remove the column index name
-df = df.drop('Estimates Start After', axis=1)
+df = df.drop("Estimates Start After", axis=1)
 
 """
 #with open(source_directory + csvFileName, 'r', encoding = source_encoding) as csvfile:
@@ -283,4 +296,3 @@ print("Done?")
 
 df.to_csv(destination_path, index=False)
 print("done at end?")
-

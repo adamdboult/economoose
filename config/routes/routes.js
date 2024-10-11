@@ -1,14 +1,11 @@
+module.exports = function (app) {
+  "use strict";
 
-module.exports = function(app){
-    'use strict';
+  app.get("/", function (req, res) {
+    res.render("home");
+  });
 
-    app.get('/', function(req, res) {
-	res.render('home');
-    });
-    
-    app.get('/about', function(req, res){
-	res.render('about');
-    });
-
+  app.get("/about", function (req, res) {
+    res.render("about");
+  });
 };
-

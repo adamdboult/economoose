@@ -4,20 +4,21 @@
 ##########
 
 .PHONY: all
-.PHONY: empty_dest
 .PHONY: favicon
 .PHONY: packages
 .PHONY: scripts
 .PHONY: styles
 .PHONY: csvProcess
+.PHONY: clean
+
 
 ##########
 # JSHINT #
 ##########
-all: empty_dest favicon packages scripts styles csvProcess
+all: clean favicon packages scripts styles csvProcess
 
 
-empty_dest:
+clean:
 	rm -rf ./data/
 	rm -rf ./public/
 	mkdir ./data/

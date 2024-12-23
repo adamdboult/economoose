@@ -5,8 +5,9 @@ RUN apt-get update && apt-get install --no-install-recommends --yes \
   python3-venv                                                      \
   python3-dev                                                       \
   python3-pip                                                       \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  && apt-get clean                                                  \
+  && rm -rf /var/lib/apt/lists/*                                    \
+  && rm -rf /usr/share/doc/* /usr/share/man/*
 
 # Needed for the empty folder stuff to work
 WORKDIR /app

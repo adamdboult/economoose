@@ -1,6 +1,3 @@
-"use strict";
-/*jshint node:true */
-
 // Dependencies
 var express = require("express");
 var fs = require("fs");
@@ -120,8 +117,8 @@ for (i = 0; i < jsonImport.length; i++) {
     addToMongoCallback(jsonObj);
   }
   //console.log("hi8");
-  if (jsonImport.length === i + 1) {
-  }
+  //if (jsonImport.length === i + 1) {
+  //}
 }
 
 //FAVOURITE OBJECT
@@ -164,7 +161,7 @@ app.get("/favs/:id", function (req, res) {
 // Since this is the last non-error-handling
 // middleware used, we assume 404, as nothing else
 // responded.
-app.use(function (req, res, next) {
+app.use(function (req, res) {
   res.status(404);
 
   // respond with html page

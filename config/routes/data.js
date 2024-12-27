@@ -1,9 +1,6 @@
-//var express=require('express');
-
 module.exports = function (app) {
-  "use strict";
   var DataSerie = require(__dirname + "/../models/data.js");
-  var rootObject = { root: __dirname + "/../../public" };
+  //var rootObject = { root: __dirname + "/../../public" };
 
   app.get("/dpi/:id", function (req, res) {
     DataSerie.find({ _id: req.params.id }, function (err, idw) {
@@ -28,8 +25,8 @@ module.exports = function (app) {
       }
     }
     var pagelen = 20;
-    for (var ftrs in query) {
-    }
+    //for (var ftrs in query) {
+    //}
     DataSerie.count(query, function (err1, edw1) {
       DataSerie.find(
         query,

@@ -1,5 +1,4 @@
 var myApp = angular.module("myApp", []);
-
 /////////////
 /* Mathjax */
 /////////////
@@ -31,7 +30,6 @@ myApp.controller("mainController", [
   "$http",
   "$window",
   function ($rootScope, $scope, $http, $window) {
-    "use strict";
     ////////////////////
     /* INITIALISATION */
     ////////////////////

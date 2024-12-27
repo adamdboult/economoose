@@ -22,6 +22,7 @@ clean:
 	rm -rf ./data/
 	rm -rf ./public/
 	mkdir ./data/
+	mkdir ./data/csv
 	mkdir ./public/
 
 favicon:
@@ -47,7 +48,9 @@ styles:
 	#sass ./src/styles/core.scss:./public/css/core.css
 	
 csvProcess:
-	python ./csv-manipulation.py
-	python ./csvtojson.py
-
+	#python ./csv_manipulation.py
+	python ./csv_manipulation_pandas.py
+	python ./csv_to_json.py
+	#cp data/csv/corrected.csv corrected-non-pandas.csv
+	#cp data/csv/corrected.csv corrected-pandas.csv
 

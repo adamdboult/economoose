@@ -12,18 +12,15 @@
 .PHONY: clean
 
 
-##########
-# JSHINT #
-##########
+
 all: clean favicon packages scripts styles csvProcess
 
 
 clean:
-	rm -rf ./data/
-	rm -rf ./public/
-	mkdir ./data/
-	mkdir ./data/csv
-	mkdir ./public/
+	rm -rf ./data/ ./public/
+	mkdir -p ./data/csv/
+	mkdir -p ./data/json/
+	mkdir -p ./public/
 
 favicon:
 	cp ./src/img/compiled/* ./public/
@@ -33,7 +30,6 @@ packages:
 	cp -R ./node_modules/mathjax/es5 ./public/packages/mathjax
 	cp -R ./node_modules/bootstrap/dist ./public/packages/bootstrap
 	cp -R ./node_modules/jquery/dist ./public/packages/jquery
-	#cp -R ./node_modules/popper.js/dist/umd ./public/packages/popper.js
 	cp -R ./node_modules/angular ./public/packages/angular
 	cp -R ./node_modules/angular-route ./public/packages/angular-route
 	cp -R ./node_modules/d3/dist ./public/packages/d3
@@ -49,8 +45,8 @@ styles:
 	
 csvProcess:
 	#python ./csv_manipulation.py
-	python ./csv_manipulation_pandas.py
-	python ./csv_to_json.py
+	python ./csv_manipulation/csv_manipulation_pandas.py
+	python ./csv_manipulation/csv_to_json.py
 	#cp data/csv/corrected.csv corrected-non-pandas.csv
 	#cp data/csv/corrected.csv corrected-pandas.csv
 

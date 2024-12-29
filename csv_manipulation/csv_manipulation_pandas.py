@@ -26,7 +26,7 @@ this_dir = os.path.dirname(__file__)
 ############
 # settings #
 ############
-source_directory = os.path.join(this_dir, "Raw data/IMF")
+source_directory = os.path.join(this_dir, "../Raw data/IMF")
 
 #################
 # File settings #
@@ -40,7 +40,7 @@ CUT_OFF = 1552
 ######################
 # Set up destination #
 ######################
-destination_path = os.path.join(this_dir, "data/csv/corrected.csv")
+destination_path = os.path.join(this_dir, "../data/csv/corrected.csv")
 destination_dir = os.path.dirname(destination_path)
 
 ############

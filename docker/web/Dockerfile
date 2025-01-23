@@ -1,13 +1,14 @@
 FROM node:22
 RUN apt-get update && apt-get install --no-install-recommends --yes \
-  build-essential                                                   \
-  python3                                                           \
-  python3-venv                                                      \
-  python3-dev                                                       \
+  python3.11                                                           \
+  python3.11-venv                                                      \
+  python3.11-dev                                                       \
   python3-pip                                                       \
   && apt-get clean                                                  \
   && rm -rf /var/lib/apt/lists/*                                    \
   && rm -rf /usr/share/doc/* /usr/share/man/*
+
+#  build-essential                                                   \
 
 # Needed for the empty folder stuff to work
 WORKDIR /app

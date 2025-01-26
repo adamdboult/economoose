@@ -3,13 +3,21 @@ module.exports = function (app) {
   //var rootObject = { root: __dirname + "/../../public" };
 
   app.get("/dpi/:id", function (req, res) {
-    DataSerie.find({ _id: req.params.id }, function (err, idw) {
+    /*DataSerie.find({ _id: req.params.id }, function (err, idw) {
       if (err) {
         console.error("doh");
         res.send(err);
       }
       res.json(idw);
-    });
+    });*/
+    DataSerie.find({ _id: req.params.id })
+      .then((idw) => {
+        res.json(idw);
+      })
+      .catch((err) => {
+        console.error("doh");
+        res.send(err);
+      });
   });
   var filterMatchIdentity = "Any";
   app.get("/cpi/:id", function (req, res) {
@@ -27,7 +35,8 @@ module.exports = function (app) {
     var pagelen = 20;
     //for (var ftrs in query) {
     //}
-    DataSerie.count(query, function (err1, edw1) {
+
+    /*DataSerie.count(query, function (err1, edw1) {
       DataSerie.find(
         query,
         "uniqueID label filter",
@@ -42,6 +51,23 @@ module.exports = function (app) {
           res.json(idw);
         },
       );
-    });
+    });*/
+    // Using nested .then():
+    DataSerie.countDocuments(query)
+      .then((edw1) => {
+        // Once we have the count (edw1), do the find() query
+        return DataSerie.find(query, "uniqueID label filter", {
+          skip: pagenum * pagelen,
+          limit: pagelen,
+        }).then((idw) => {
+          const pagesArray = [Math.ceil(edw1 / pagelen), 1];
+          const pages = Math.max(...pagesArray);
+          idw.push(pages);
+          res.json(idw);
+        });
+      })
+      .catch((err) => {
+        res.send(err);
+      });
   });
 };

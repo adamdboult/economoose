@@ -35,13 +35,25 @@ var database_name = "economoose";
 var mongo_path =
   "mongodb://" + mongo_domain + ":" + mongo_port + "/" + database_name;
 console.log("Mongo path is: " + mongo_path);
-mongoose.connect(
-  mongo_path,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  function (err) {
-    if (err) console.error("ERR" + err);
-  },
-);
+
+//mongoose.connect(
+//  mongo_path,
+//  { useNewUrlParser: true, useUnifiedTopology: true },
+//  function (err) {
+//    if (err) console.error("ERR" + err);
+//  },
+//);
+mongoose
+  .connect(`mongodb://${mongo_domain}:${mongo_port}/${database_name}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB!");
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+  });
 
 /*
 if (console.log(process.argv[2]) === "docker") {
@@ -63,7 +75,7 @@ var DataSerie = require(__dirname + "/config/models/data.js");
 var filterArray = {};
 var filterMatchIdentity = "Any";
 var filterInit = function () {
-  DataSerie.find({}, "filter", function (err, allobjs) {
+  /*DataSerie.find({}, "filter", function (err, allobjs) {
     if (err) {
       //		logger.debug("Error: "+err);
     }
@@ -79,7 +91,28 @@ var filterInit = function () {
       }
     }
     console.log("Filt: " + filterArray);
-  });
+  });*/
+
+  DataSerie.find({}, "filter")
+    .then((allobjs) => {
+      // Process the results as before, just without the callback
+      for (let filter in allobjs) {
+        for (let entry in allobjs[filter].filter) {
+          if (Object.keys(filterArray).indexOf(entry) === -1) {
+            filterArray[entry] = [filterMatchIdentity];
+          }
+          if (
+            filterArray[entry].indexOf(allobjs[filter].filter[entry]) === -1
+          ) {
+            filterArray[entry].push(allobjs[filter].filter[entry]);
+          }
+        }
+      }
+      console.log("Filt: " + filterArray);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+    });
 };
 
 //DATA IMPORT
@@ -91,10 +124,11 @@ var db = mongoose.connection;
 console.log("about to test");
 console.log(mongoose.connection.readyState);
 console.log("finished test");
+
+/*
 db.collection("jsonalls").drop();
 var jsonObj;
 var addToMongoCallback = function (jsonObj) {
-  //db.collection('jsonalls').save(jsonObj, function() {
   db.collection("jsonalls").insertOne(jsonObj, function () {
     j = j + 1;
     if (j === jsonImport.length) {
@@ -105,7 +139,6 @@ var addToMongoCallback = function (jsonObj) {
 };
 
 for (i = 0; i < jsonImport.length; i++) {
-  //console.log("hi7");
   if (jsonImport[i] === "") {
     console.log("bad: " + i);
     j = j + 1;
@@ -116,21 +149,57 @@ for (i = 0; i < jsonImport.length; i++) {
     jsonObj = JSON.parse(jsonImport[i]);
     addToMongoCallback(jsonObj);
   }
-  //console.log("hi8");
-  //if (jsonImport.length === i + 1) {
-  //}
 }
+*/
+db.collection("jsonalls")
+  .drop()
+  .then(() => {
+    // We'll store promises for each valid insert
+    const insertPromises = [];
+
+    for (let i = 0; i < jsonImport.length; i++) {
+      if (jsonImport[i] === "") {
+        console.log("bad: " + i);
+        // If you want to handle "empty string" differently,
+        // you can just skip it or push a Promise.resolve() here.
+        // e.g. insertPromises.push(Promise.resolve());
+      } else {
+        const jsonObj = JSON.parse(jsonImport[i]);
+        // insertOne() returns a Promise if no callback is given
+        insertPromises.push(db.collection("jsonalls").insertOne(jsonObj));
+      }
+    }
+
+    // Wait for all insertOne() calls to finish
+    return Promise.all(insertPromises);
+  })
+  .then(() => {
+    // Everything is inserted now
+    filterInit();
+    favInit();
+  })
+  .catch((err) => {
+    console.error("Error during import:", err);
+  });
 
 //FAVOURITE OBJECT
 var favouriteObject = {};
 var favInit = function () {
-  DataSerie.find({ Favourite: "1" }, "label Favourite", function (err, favObj) {
-    if (err) {
+  //DataSerie.find({ Favourite: "1" }, "label Favourite", function (err, favObj) {
+  //  if (err) {
+  //    console.error("Error: " + err);
+  //  }
+  //  favouriteObject = favObj;
+  //  console.log("Favs: " + favObj);
+  //});
+  DataSerie.find({ Favourite: "1" }, "label Favourite")
+    .then((favObj) => {
+      favouriteObject = favObj;
+      console.log("Favs: " + favObj);
+    })
+    .catch((err) => {
       console.error("Error: " + err);
-    }
-    favouriteObject = favObj;
-    console.log("Favs: " + favObj);
-  });
+    });
 };
 
 ////////////////////////

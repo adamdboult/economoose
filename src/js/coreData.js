@@ -700,7 +700,8 @@ myApp.controller("mainController", [
     $scope.drawGraph = function () {
       $scope.addColour();
       $scope.dataExistError = 0;
-      $("#chartdiv").empty();
+      //$("#chartdiv").empty();
+      document.getElementById("chartdiv").innerHTML = "";
       var div = d3
         .select("#main")
         .append("div")
@@ -769,13 +770,13 @@ myApp.controller("mainController", [
       //if (w <wmin) {w=wmin;}
       var h = w * (5 / 8) + $scope.localSelectionY.length * 20;
 
-      $("#canvasHold").html(
+      document.getElementById("canvasHold").innerHTML =
         '<canvas width="' +
-          w +
-          '" height="' +
-          h +
-          '" style="display:none"></canvas>',
-      );
+        w +
+        '" height="' +
+        h +
+        '" style="display:none"></canvas>';
+
       var paddingmarginxleft = w / 15 + $scope.ylabel.length * 15;
       var paddingmarginxright = w / 15;
       var paddingmarginytop = h / 15;

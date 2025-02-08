@@ -1,7 +1,4 @@
 doctype html
-
-//html#ng-app(lang="en", ng-app="myApp")
-//html(ng-app="myApp")
 html(lang="en")
 	head
 		meta(charset="utf-8")
@@ -10,23 +7,16 @@ html(lang="en")
 
 		title Economoose
 
-		link(rel="stylesheet", href="/packages/bootstrap/css/bootstrap.min.css")
+		link(rel="stylesheet", href="/packages/bootstrap/css/bootstrap.css")
+		script(src="/packages/bootstrap/js/bootstrap.bundle.js")
 
-		script(src="/packages/jquery/jquery.min.js")
+		script#MathJax-script(src="/packages/mathjax/tex-mml-chtml.js")
 
-		//script(src="/packages/popper.js/popper.min.js")
-		//script(src="/packages/bootstrap/js/bootstrap.min.js")
-		script(src="/packages/bootstrap/js/bootstrap.bundle.min.js")
-
-		script(src="/packages/d3/d3.min.js")
+		script(src="/packages/d3/d3.js")
 		
-		// NB: Not doing async because existance of function is assumed by prediction.js.
-		script#MathJax-script(src ="/packages/mathjax/tex-mml-chtml.js")
-
-		script(src="/packages/angular/angular.min.js")
-		script(src="/packages/angular-route/angular-route.min.js")
+		script(src="/packages/angular/angular.js")
+		script(src="/packages/angular-route/angular-route.js")
 		
-	//body#ng-app(ng-controller="mainController")
 	body
 		nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
 			a.navbar-brand(href='/') Economoose

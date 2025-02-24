@@ -36,13 +36,6 @@ var mongo_path =
   "mongodb://" + mongo_domain + ":" + mongo_port + "/" + database_name;
 console.log("Mongo path is: " + mongo_path);
 
-//mongoose.connect(
-//  mongo_path,
-//  { useNewUrlParser: true, useUnifiedTopology: true },
-//  function (err) {
-//    if (err) console.error("ERR" + err);
-//  },
-//);
 mongoose
   .connect(`mongodb://${mongo_domain}:${mongo_port}/${database_name}`, {
     useNewUrlParser: true,
@@ -55,19 +48,6 @@ mongoose
     console.error("Database connection error:", err);
   });
 
-/*
-if (console.log(process.argv[2]) === "docker") {
-    mongoose.connect('mongodb://economoose_mongo:27018/' + configObj.databaseName, { useNewUrlParser: true, useUnifiedTopology: true}, function(err) {
-        if (err) console.error("ERR" + err);
-    });
-}
-else {
-    mongoose.connect('mongodb://127.0.0.1:27017/' + configObj.databaseName, { useNewUrlParser: true, useUnifiedTopology: true}, function(err) {
-        if (err) console.error("ERR" + err);
-    });
-}
-*/
-
 //MODELS
 var DataSerie = require(__dirname + "/config/models/data.js");
 
@@ -75,24 +55,6 @@ var DataSerie = require(__dirname + "/config/models/data.js");
 var filterArray = {};
 var filterMatchIdentity = "Any";
 var filterInit = function () {
-  /*DataSerie.find({}, "filter", function (err, allobjs) {
-    if (err) {
-      //		logger.debug("Error: "+err);
-    }
-
-    for (var filter in allobjs) {
-      for (var entry in allobjs[filter].filter) {
-        if (Object.keys(filterArray).indexOf(entry) === -1) {
-          filterArray[entry] = [filterMatchIdentity];
-        }
-        if (filterArray[entry].indexOf(allobjs[filter].filter[entry]) === -1) {
-          filterArray[entry].push(allobjs[filter].filter[entry]);
-        }
-      }
-    }
-    console.log("Filt: " + filterArray);
-  });*/
-
   DataSerie.find({}, "filter")
     .then((allobjs) => {
       // Process the results as before, just without the callback
@@ -125,32 +87,6 @@ console.log("about to test");
 console.log(mongoose.connection.readyState);
 console.log("finished test");
 
-/*
-db.collection("jsonalls").drop();
-var jsonObj;
-var addToMongoCallback = function (jsonObj) {
-  db.collection("jsonalls").insertOne(jsonObj, function () {
-    j = j + 1;
-    if (j === jsonImport.length) {
-      filterInit();
-      favInit();
-    }
-  });
-};
-
-for (i = 0; i < jsonImport.length; i++) {
-  if (jsonImport[i] === "") {
-    console.log("bad: " + i);
-    j = j + 1;
-    if (j === jsonImport.length) {
-      filterInit();
-    }
-  } else {
-    jsonObj = JSON.parse(jsonImport[i]);
-    addToMongoCallback(jsonObj);
-  }
-}
-*/
 db.collection("jsonalls")
   .drop()
   .then(() => {
@@ -185,13 +121,7 @@ db.collection("jsonalls")
 //FAVOURITE OBJECT
 var favouriteObject = {};
 var favInit = function () {
-  //DataSerie.find({ Favourite: "1" }, "label Favourite", function (err, favObj) {
-  //  if (err) {
-  //    console.error("Error: " + err);
-  //  }
-  //  favouriteObject = favObj;
-  //  console.log("Favs: " + favObj);
-  //});
+  // note this returns an array of all entries listed as favourites. Be it 1, 0 or whatever.
   DataSerie.find({ Favourite: "1" }, "label Favourite")
     .then((favObj) => {
       favouriteObject = favObj;
@@ -224,6 +154,7 @@ app.get("/path/:id", function (req, res) {
 });
 
 app.get("/favs/:id", function (req, res) {
+  // note that favouriteObject is an array of all entries listed as favourites. Be it 1, 0 or whatever.
   res.json(favouriteObject);
 });
 

@@ -174,7 +174,9 @@ myApp.controller("mainController", [
       console.log(response.data);
       var favlist = response.data;
       $scope.favList = favlist;
-      $scope.getData($scope.favList[1]._id);
+      // note that response.data is an array of all entries listed as favourites. Be it 1, 0 or whatever.
+      //$scope.getData($scope.favList[1]._id);
+      $scope.getData($scope.favList[0]._id);
     });
 
     $scope.pageReset = 1;

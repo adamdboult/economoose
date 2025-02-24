@@ -21,9 +21,8 @@ RUN npm ci
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
-#RUN pip3 install -r requirements.txt
 RUN python3 -m venv /opt/venv \
-    && /opt/venv/bin/pip install --disable-pip-version-check --no-cache-dir -r requirements.txt
+    && /opt/venv/bin/pip install --disable-pip-version-check --no-cache-dir --no-deps --require-hashes -r requirements.txt
 
 # Ensure the virtual environment is activated for future commands
 ENV PATH="/opt/venv/bin:$PATH"

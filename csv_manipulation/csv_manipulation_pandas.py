@@ -37,6 +37,10 @@ SOURCE_ENCODING = "latin-1"
 
 CUT_OFF = 1552
 
+# fav_array = [314, 200, 8003]
+# First element here gets used as the default shown to user. Later elements have no use.
+fav_array = [1478]
+
 ######################
 # Set up destination #
 ######################
@@ -233,7 +237,6 @@ for col_name in filter_array:
 #############
 # Favourite #
 #############
-fav_array = [314, 200, 8003]
 
 df["Favourite"] = df.index.isin(fav_array).astype(int)
 

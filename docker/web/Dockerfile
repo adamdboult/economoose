@@ -1,21 +1,29 @@
-FROM node:22
-RUN apt-get update && apt-get install --no-install-recommends --yes \
-  python3.11                                                           \
-  python3.11-venv                                                      \
-  python3.11-dev                                                       \
-  python3-pip                                                       \
-  && apt-get clean                                                  \
-  && rm -rf /var/lib/apt/lists/*                                    \
-  && rm -rf /usr/share/doc/* /usr/share/man/*
-
-# Needed for the empty folder stuff to work
+FROM node:22 AS node-build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
 RUN npm ci
 
-ENV PATH="/opt/venv/bin:$PATH"
+#FROM python:3.11
+FROM node:22
+WORKDIR /app
+
+# Copy Node.js dependencies from the build stage
+#COPY --from=node-build /usr/local/lib/node_modules ./
+COPY --from=node-build /app/node_modules ./node_modules
+
+# Set up environment variables
+#ENV PATH="/usr/local/lib/node_modules/.bin:$PATH"
+
+RUN apt-get update && apt-get install --no-install-recommends --yes \
+  python3.11                                                        \
+  python3.11-venv                                                   \
+  python3.11-dev                                                    \
+  python3-pip                                                       \
+  && apt-get clean                                                  \
+  && rm -rf /var/lib/apt/lists/*                                    \
+  && rm -rf /usr/share/doc/* /usr/share/man/*
 
 COPY requirements.txt .
 RUN python3 -m venv /opt/venv \

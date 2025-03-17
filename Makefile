@@ -37,6 +37,6 @@ scripts:
 #	cp -R./src/styles/. ./public/css
 	
 csvProcess:
-	python3 ./csv_manipulation/csv_manipulation_pandas.py
-	python3 ./csv_manipulation/csv_to_json.py
+	python ./csv_manipulation/csv_manipulation_pandas.py
+	python ./csv_manipulation/csv_to_json.py
 

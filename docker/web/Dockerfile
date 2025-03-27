@@ -1,12 +1,17 @@
 FROM node:22 AS node-build
+RUN npm install -g npm@latest
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
+# Setting NODE_ENV means the development packages get skipped
+ENV NODE_ENV=production
 RUN npm ci
 
 #FROM python:3.11
 FROM node:22
+
 WORKDIR /app
 
 # Copy Node.js dependencies from the build stage
